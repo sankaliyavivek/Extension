@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "My Chrome Extension",
+    "version": "1.0",
+    "description": "A simple login extension that stores data locally",
+    "action": {
+      "default_icon": "vite.svg"
+    },
+    "permissions": ["storage", "tabs"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "host_permissions": ["<all_urls>"]
+  }
+  
