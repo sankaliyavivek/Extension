@@ -5,8 +5,8 @@ const cors =require('cors');
 
 app.use(
     cors({
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST','DELETE'],
+        origin: ['http://localhost:5173','myextensionproject.netlify.app'],
+        methods: ['GET','POST','DELETE'],
         
     })
 )
