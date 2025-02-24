@@ -94,17 +94,22 @@ function App() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/extensionuser/login`, {
-        email,
-        password,
-      }, { withCredentials: true });
+      const response = await axios.post(
+        `${API_BASE_URL}/extensionuser/login`,
+        { email, password },
+        { withCredentials: true }
+      );
 
       alert("Login successful");
       setUser(response.data.user);
       setIsLoggedIn(true);
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -154,10 +159,11 @@ function App() {
                 <button
                   onClick={handleLogin}
                   className="btn btn-primary w-100"
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || loading} // Disable when loading
                 >
-                  Login
+                  {loading ? "Logging in..." : "Login"}
                 </button>
+
                 <br /><br />
                 <div className="w-100 text-center btn btn-primary" onClick={handleBack}>
                   <span>Back</span>
