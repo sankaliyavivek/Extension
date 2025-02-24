@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 
 
-const API_BASE_URL=import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 console.log(API_BASE_URL)
 
 function App() {
@@ -61,7 +61,7 @@ function App() {
     if (onSubmit || Object.keys(touched).length > 0) {
       setErrors(newErrors);
     }
-    
+
     setIsFormValid(isValid);
   };
 
@@ -95,7 +95,7 @@ function App() {
     if (!isFormValid) return;
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/extensionuser/login` , {
+      const response = await axios.post(`${API_BASE_URL}/extensionuser/login`, {
         email,
         password,
       });
@@ -109,6 +109,10 @@ function App() {
     }
   };
 
+  const handelback =()=>{
+    setIsRegistered(false);
+  }
+
   const handleLogout = () => {
     setUser(null);
     setIsLoggedIn(false);
@@ -116,9 +120,9 @@ function App() {
     localStorage.removeItem("user");
   };
 
- const  hendellogin=()=>{
-  setIsRegistered(true)
- }
+  const hendellogin = () => {
+    setIsRegistered(true)
+  }
   return (
     <div className="d-flex justify-content-center align-items-center">
       <div className="text-center border p-4 rounded shadow bg-light" style={{ width: "350px", maxWidth: "90%" }}>
@@ -152,6 +156,9 @@ function App() {
                 >
                   Login
                 </button>
+                <br></br><br></br>
+                <div className="w-100 text-center btn btn-primary" onClick={handelback}><span>Back</span></div>
+
               </>
             ) : (
               <div>
