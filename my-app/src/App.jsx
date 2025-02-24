@@ -116,6 +116,9 @@ function App() {
     localStorage.removeItem("user");
   };
 
+ const  hendellogin=()=>{
+  setIsRegistered(true)
+ }
   return (
     <div className="d-flex justify-content-center align-items-center">
       <div className="text-center border p-4 rounded shadow bg-light" style={{ width: "350px", maxWidth: "90%" }}>
@@ -187,6 +190,11 @@ function App() {
                 >
                   Register
                 </button>
+
+                <br></br>
+                <br></br>
+                <h5>Already have and Account? <span onClick={hendellogin} className="btn btn-info">Login</span>
+                </h5>
               </div>
             )}
           </div>
