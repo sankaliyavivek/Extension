@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./App.css";
+import Lottie from 'lottie-react'
+import register from '../register.json'
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -164,7 +166,10 @@ function App() {
               </>
             ) : (
               <div>
-                <h2>Register</h2>
+              <div className="d-flex justify-content-center align-items-center">
+              <Lottie animationData={register} className="w-25 mx-2"></Lottie>
+              <h2>Register</h2>
+              </div>
                 <input
                   type="text"
                   placeholder="Name"
@@ -202,7 +207,7 @@ function App() {
 
                 <br></br>
                 <br></br>
-                <h5>Already have and Account? <span onClick={hendellogin} className="btn btn-info">Login</span>
+                <h5>Already have and Account?<span onClick={hendellogin} className="btn btn-info">Login</span>
                 </h5>
               </div>
             )}
