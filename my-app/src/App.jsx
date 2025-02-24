@@ -118,6 +118,8 @@ function App() {
     setIsLoggedIn(false);
     setIsRegistered(false);
     localStorage.removeItem("user");
+    setEmail('');
+    setPassword('');
   };
 
   const hendellogin = () => {
