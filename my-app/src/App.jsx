@@ -211,12 +211,11 @@ function App() {
                 </button>
 
                 <br /><br />
-                <h5>
-                  Already have an account?
-                  <span onClick={handleLoginPage} className="btn loginbtn">
-                    Login <span className="btnhover"></span>
+                <span>
+                  Already have an account?<span onClick={handleLoginPage} className="loginbtn">
+                    Login 
                   </span>
-                </h5>
+                </span>
               </div>
             )}
           </div>

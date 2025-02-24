@@ -42,27 +42,7 @@
 }
 
 .loginbtn{
-  background-color: aqua !important;
-  position: relative;
-  z-index: 0;
-  overflow: hidden;
-  border: none;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.btnhover{
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgb(26, 200, 174);
-  right: -260px;
-  transition: 1.5s;
-  transform: skew(-20deg);
-  /* transition: 0.2s; */
-  z-index: -1;
-}
-
-.loginbtn:hover .btnhover{
-  right: 300px;
-
-}
