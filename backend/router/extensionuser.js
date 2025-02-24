@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const ExtensionUser = require('../modal/extensionmodal');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const ExtensionUser = require('../modal/extensionmodal');
+const authMiddleware = require('../middleware/authMiddleware'); // Import auth middleware
+const cookieParser = require('cookie-parser');
 
-// Register Route
+router.use(cookieParser()); // Enable cookie parsing
+
+// **Register Route**
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
-    // Input Validation
     if (!name || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
@@ -20,29 +23,25 @@ router.post('/register', async (req, res) => {
     }
 
     try {
-        // Check if user already exists
         const existingUser = await ExtensionUser.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email already registered" });
         }
 
-        // Hash Password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create User
         const user = await ExtensionUser.create({ name, email, password: hashedPassword });
-        res.status(201).json({ message: 'User registered successfully', user });
+
+        res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
-// Login Route
+// **Login Route**
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    // Input Validation
     if (!email || !password) {
         return res.status(400).json({ message: "Both email and password are required" });
     }
@@ -54,15 +53,39 @@ router.post('/login', async (req, res) => {
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) return res.status(401).json({ message: "Invalid email or password" });
 
-        res.json({ message: 'Login successful', user: { name: user.name, email: user.email } });
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+            expiresIn: "7d",
+        });
+
+        // Store token in HTTP-only cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // Set secure in production
+            sameSite: "Strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        res.json({ message: "Login successful", user: { name: user.name, email: user.email } });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
-// Logout Route
+// **Logout Route**
 router.post('/logout', (req, res) => {
-    res.json({ message: 'User logged out successfully' });
+    res.clearCookie("token"); // Clear JWT cookie
+    res.json({ message: "User logged out successfully" });
 });
+
+// // **Protected Route Example**
+// router.get('/profile', authMiddleware, async (req, res) => {
+//     try {
+//         const user = await ExtensionUser.findById(req.user.id).select("-password");
+//         res.json({ user });
+//     } catch (error) {
+//         res.status(500).json({ message: "Server error", error: error.message });
+//     }
+// });
 
 module.exports = router;

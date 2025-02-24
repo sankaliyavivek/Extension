@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./App.css";
-import Lottie from 'lottie-react'
-import register from '../register.json'
+import Lottie from 'lottie-react';
+import register from '../register.json';
 
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-console.log(API_BASE_URL)
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log(API_BASE_URL);
 
 function App() {
   const [name, setName] = useState("");
@@ -18,7 +17,8 @@ function App() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-  const [touched, setTouched] = useState({}); // Track which fields are touched
+  const [touched, setTouched] = useState({});
+  const [loading, setLoading] = useState(false); // New loading state
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -59,7 +59,6 @@ function App() {
       }
     }
 
-    // Only set errors if the field has been touched or if form is submitted
     if (onSubmit || Object.keys(touched).length > 0) {
       setErrors(newErrors);
     }
@@ -69,10 +68,11 @@ function App() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    validateInputs(true); // Validate everything on submit
+    validateInputs(true);
 
     if (!isFormValid) return;
 
+    setLoading(true); // Start loading
     try {
       await axios.post(`${API_BASE_URL}/extensionuser/register`, {
         name,
@@ -87,33 +87,30 @@ function App() {
       setPassword("");
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    validateInputs(true); // Validate everything on submit
-
-    if (!isFormValid) return;
-
     try {
       const response = await axios.post(`${API_BASE_URL}/extensionuser/login`, {
         email,
         password,
-      });
+      }, { withCredentials: true });
 
       alert("Login successful");
       setUser(response.data.user);
       setIsLoggedIn(true);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
     }
   };
 
-  const handelback =()=>{
+  const handleBack = () => {
     setIsRegistered(false);
-  }
+  };
 
   const handleLogout = () => {
     setUser(null);
@@ -124,9 +121,10 @@ function App() {
     setPassword('');
   };
 
-  const hendellogin = () => {
-    setIsRegistered(true)
-  }
+  const handleLoginPage = () => {
+    setIsRegistered(true);
+  };
+
   return (
     <div className="d-flex justify-content-center align-items-center">
       <div className="text-center border p-4 rounded shadow bg-light" style={{ width: "350px", maxWidth: "90%" }}>
@@ -140,7 +138,7 @@ function App() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onBlur={() => setTouched({ ...touched, email: true })} // Mark as touched
+                  onBlur={() => setTouched({ ...touched, email: true })}
                   className="form-control mb-2"
                 />
                 {errors.email && <p className="text-danger">{errors.email}</p>}
@@ -156,20 +154,21 @@ function App() {
                 <button
                   onClick={handleLogin}
                   className="btn btn-primary w-100"
-                  disabled={!isFormValid} // Button disabled when form is invalid
+                  disabled={!isFormValid}
                 >
                   Login
                 </button>
-                <br></br><br></br>
-                <div className="w-100 text-center btn btn-primary" onClick={handelback}><span>Back</span></div>
-
+                <br /><br />
+                <div className="w-100 text-center btn btn-primary" onClick={handleBack}>
+                  <span>Back</span>
+                </div>
               </>
             ) : (
               <div>
-              <div className="d-flex justify-content-center align-items-center">
-              <Lottie animationData={register} className="w-25"></Lottie>
-              <h2>Register</h2>
-              </div>
+                <div className="d-flex justify-content-center align-items-center">
+                  <Lottie animationData={register} className="w-25"></Lottie>
+                  <h2>Register</h2>
+                </div>
                 <input
                   type="text"
                   placeholder="Name"
@@ -200,14 +199,17 @@ function App() {
                 <button
                   onClick={handleRegister}
                   className="btn btn-success w-100"
-                  disabled={!isFormValid} // Button disabled when form is invalid
+                  disabled={!isFormValid || loading}
                 >
-                  Register
+                  {loading ? "Registering..." : "Register"} {/* Show loading text */}
                 </button>
 
-                <br></br>
-                <br></br>
-                <h5>Already have and Account?<span onClick={hendellogin} className="btn loginbtn">Login <span className="btnhover"></span></span>
+                <br /><br />
+                <h5>
+                  Already have an account?
+                  <span onClick={handleLoginPage} className="btn loginbtn">
+                    Login <span className="btnhover"></span>
+                  </span>
                 </h5>
               </div>
             )}
