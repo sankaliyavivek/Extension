@@ -213,7 +213,7 @@ function App() {
                 <br /><br />
                 <span>
                   Already have an account?<span onClick={handleLoginPage} className="loginbtn">
-                    Login 
+                    Login
                   </span>
                 </span>
               </div>

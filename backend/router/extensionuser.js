@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ExtensionUser = require('../modal/extensionmodal');
-const authMiddleware = require('../middleware/authMiddleware'); // Import auth middleware
 const cookieParser = require('cookie-parser');
 
 router.use(cookieParser()); // Enable cookie parsing
@@ -78,14 +77,6 @@ router.post('/logout', (req, res) => {
     res.json({ message: "User logged out successfully" });
 });
 
-// // **Protected Route Example**
-// router.get('/profile', authMiddleware, async (req, res) => {
-//     try {
-//         const user = await ExtensionUser.findById(req.user.id).select("-password");
-//         res.json({ user });
-//     } catch (error) {
-//         res.status(500).json({ message: "Server error", error: error.message });
-//     }
-// });
+
 
 module.exports = router;
