@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./App.css";
-import Lottie from 'lottie-react';
-import register from '../register.json';
+import Lottie from "lottie-react";
+import register from "../register.json";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 console.log(API_BASE_URL);
@@ -14,11 +14,13 @@ function App() {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(() => {
+    return localStorage.getItem("isRegistered") === "true";
+  });
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [touched, setTouched] = useState({});
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -72,7 +74,7 @@ function App() {
 
     if (!isFormValid) return;
 
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       await axios.post(`${API_BASE_URL}/extensionuser/register`, {
         name,
@@ -82,19 +84,20 @@ function App() {
 
       alert("Registered successfully. Now you can log in.");
       setIsRegistered(true);
+      localStorage.setItem("isRegistered", "true"); // Store state
       setName("");
       setEmail("");
       setPassword("");
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -106,15 +109,12 @@ function App() {
       alert("Login successful");
       setUser(response.data.user);
       setIsLoggedIn(true);
+      localStorage.setItem("user", JSON.stringify(response.data.user)); // Store user data
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
-  };
-
-  const handleBack = () => {
-    setIsRegistered(false);
   };
 
   const handleLogout = () => {
@@ -122,12 +122,17 @@ function App() {
     setIsLoggedIn(false);
     setIsRegistered(false);
     localStorage.removeItem("user");
-    setEmail('');
-    setPassword('');
+    localStorage.removeItem("isRegistered");
+    setEmail("");
+    setPassword("");
   };
 
-  const handleLoginPage = () => {
-    setIsRegistered(true);
+  const togglePage = () => {
+    setIsRegistered((prev) => {
+      const newState = !prev;
+      localStorage.setItem("isRegistered", newState.toString()); // Store toggle state
+      return newState;
+    });
   };
 
   return (
@@ -159,15 +164,15 @@ function App() {
                 <button
                   onClick={handleLogin}
                   className="btn btn-primary w-100"
-                  disabled={!isFormValid || loading} // Disable when loading
+                  disabled={!isFormValid || loading}
                 >
                   {loading ? "Logging in..." : "Login"}
                 </button>
 
                 <br /><br />
-                <div className="w-100 text-center btn btn-primary" onClick={handleBack}>
-                  <span>Back</span>
-                </div>
+                <button className="btn btn-secondary w-100" onClick={togglePage}>
+                  Don't have an account? Register
+                </button>
               </>
             ) : (
               <div>
@@ -207,15 +212,13 @@ function App() {
                   className="btn btn-success w-100"
                   disabled={!isFormValid || loading}
                 >
-                  {loading ? "Registering..." : "Register"} {/* Show loading text */}
+                  {loading ? "Registering..." : "Register"}
                 </button>
 
                 <br /><br />
-                <span>
-                  Already have an account?<span onClick={handleLoginPage} className="loginbtn">
-                    Login
-                  </span>
-                </span>
+                <button className="btn btn-secondary w-100" onClick={togglePage}>
+                  Have an account? Login
+                </button>
               </div>
             )}
           </div>
