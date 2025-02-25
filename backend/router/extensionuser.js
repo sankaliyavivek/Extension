@@ -38,38 +38,74 @@ router.post('/register', async (req, res) => {
 });
 
 // **Login Route**
+// router.post('/login', async (req, res) => {
+//     const { email, password } = req.body;
+
+//     if (!email || !password) {
+//         return res.status(400).json({ message: "Both email and password are required" });
+//     }
+
+//     try {
+//         const user = await ExtensionUser.findOne({ email });
+//         if (!user) return res.status(401).json({ message: "Invalid email or password" });
+
+//         const isValidPassword = await bcrypt.compare(password, user.password);
+//         if (!isValidPassword) return res.status(401).json({ message: "Invalid email or password" });
+
+//         // Generate JWT token
+//         const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+//             expiresIn: "7d",
+//         });
+
+//         // Store token in HTTP-only cookie
+//         res.cookie("token", token, {
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "production", // Set secure in production
+//             sameSite: "Strict",
+//             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+//         });
+
+//         res.json({ message: "Login successful", user: { name: user.name, email: user.email } });
+//     } catch (error) {
+//         res.status(500).json({ message: "Server error", error: error.message });
+//     }
+// });
+
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ message: "Both email and password are required" });
-    }
-
     try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: "Both email and password are required" });
+        }
+
         const user = await ExtensionUser.findOne({ email });
-        if (!user) return res.status(401).json({ message: "Invalid email or password" });
+        if (!user) {
+            console.error("Login error: User not found");
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
 
         const isValidPassword = await bcrypt.compare(password, user.password);
-        if (!isValidPassword) return res.status(401).json({ message: "Invalid email or password" });
+        if (!isValidPassword) {
+            console.error("Login error: Incorrect password");
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
 
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-            expiresIn: "7d",
-        });
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-        // Store token in HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Set secure in production
+            secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         res.json({ message: "Login successful", user: { name: user.name, email: user.email } });
     } catch (error) {
+        console.error("Server error during login:", error); // Log full error
         res.status(500).json({ message: "Server error", error: error.message });
     }
 });
+
 
 // **Logout Route**
 router.post('/logout', (req, res) => {
