@@ -191,7 +191,7 @@ function App() {
                 >
                   {loading ? "Logging in..." : "Login"}
                 </button>
-
+                  <ToastContainer></ToastContainer>
                 <br /><br />
                 <button className="btn btn-secondary w-100" onClick={togglePage}>
                   Don't have an account? Register
@@ -237,6 +237,7 @@ function App() {
                 >
                   {loading ? "Registering..." : "Register"}
                 </button>
+                  <ToastContainer/>
 
                 <br /><br />
                 <button className="btn btn-secondary w-100" onClick={togglePage}>
