@@ -5,6 +5,7 @@ import "./App.css";
 import Lottie from "lottie-react";
 import register from "../register.json";
 import {Bounce, toast, ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 console.log(API_BASE_URL);
