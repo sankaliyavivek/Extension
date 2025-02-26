@@ -87,7 +87,7 @@ function App() {
       // alert("Registered successfully. Now you can log in.");
       toast.success('Registered successfully. Now you can log in.', {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
@@ -122,7 +122,7 @@ function App() {
       // alert("Login successful");
       toast.success('Login successful', {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
@@ -142,6 +142,17 @@ function App() {
   };
 
   const handleLogout = () => {
+    toast.success('Logout successfully', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Bounce,
+    });
     setUser(null);
     setIsLoggedIn(false);
     setIsRegistered(false);
@@ -164,7 +175,7 @@ function App() {
       <div className="text-center border p-4 rounded shadow bg-light" style={{ width: "350px", maxWidth: "90%" }}>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={2000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick={false}
