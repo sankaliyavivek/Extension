@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 import Lottie from "lottie-react";
 import register from "../register.json";
-import {Bounce, toast, ToastContainer} from 'react-toastify'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -95,7 +95,7 @@ function App() {
         progress: undefined,
         theme: "dark",
         transition: Bounce,
-        });
+      });
       setIsRegistered(true);
       localStorage.setItem("isRegistered", "true"); // Store state
       setName("");
@@ -130,7 +130,7 @@ function App() {
         progress: undefined,
         theme: "dark",
         transition: Bounce,
-        });
+      });
       setUser(response.data.user);
       setIsLoggedIn(true);
       localStorage.setItem("user", JSON.stringify(response.data.user)); // Store user data
@@ -162,6 +162,19 @@ function App() {
   return (
     <div className="d-flex justify-content-center align-items-center">
       <div className="text-center border p-4 rounded shadow bg-light" style={{ width: "350px", maxWidth: "90%" }}>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
         {!isLoggedIn ? (
           <div>
             {isRegistered ? (
@@ -192,7 +205,6 @@ function App() {
                 >
                   {loading ? "Logging in..." : "Login"}
                 </button>
-                  <ToastContainer></ToastContainer>
                 <br /><br />
                 <button className="btn btn-secondary w-100" onClick={togglePage}>
                   Don't have an account? Register
@@ -238,7 +250,6 @@ function App() {
                 >
                   {loading ? "Registering..." : "Register"}
                 </button>
-                  <ToastContainer/>
 
                 <br /><br />
                 <button className="btn btn-secondary w-100" onClick={togglePage}>
