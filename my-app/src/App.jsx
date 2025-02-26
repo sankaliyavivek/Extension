@@ -4,6 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 import Lottie from "lottie-react";
 import register from "../register.json";
+import {Bounce, toast, ToastContainer} from 'react-toastify'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 console.log(API_BASE_URL);
@@ -82,7 +83,18 @@ function App() {
         password,
       });
 
-      alert("Registered successfully. Now you can log in.");
+      // alert("Registered successfully. Now you can log in.");
+      toast.success('Registered successfully. Now you can log in.', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        });
       setIsRegistered(true);
       localStorage.setItem("isRegistered", "true"); // Store state
       setName("");
@@ -106,7 +118,18 @@ function App() {
         { withCredentials: true }
       );
 
-      alert("Login successful");
+      // alert("Login successful");
+      toast.success('Login successful', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        });
       setUser(response.data.user);
       setIsLoggedIn(true);
       localStorage.setItem("user", JSON.stringify(response.data.user)); // Store user data
